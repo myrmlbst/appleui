@@ -14,13 +14,19 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 40) {
+            
             Text("Apple Intelligence Animation")
                 .font(.title2)
-            Text("A mesh animation developed in Swift and SwiftUI, inspired by Apple AI's new UI")
+                .bold()
+            
+            Text("A button animation inspired by Apple\nAI's new UI")
                 .font(.callout)
                 .padding()
                 .multilineTextAlignment(.center)
-            Button("Kickstart Animation") {
+            
+            MovingDashPhaseButton()
+            
+            Button("About this project") {
                 isShowingAlert = true
             }
             .alert(descriptiveText, isPresented: $isShowingAlert) {
@@ -33,16 +39,51 @@ struct ContentView: View {
             }
             .cornerRadius(20)
             .buttonStyle(.borderedProminent)
-            .tint(.teal)
-            .padding()
+            .tint(.gray)
+            .foregroundStyle(.white)
+            .padding(-16)
+            //.frame(width: 190, height: 50)
             // potentially look into these:
             // .accessibilityHint(<#T##hint: Text##Text#>)
        }
     }
 }
 
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+
+// button animation:
+struct MovingDashPhaseButton: View {
+    @State private var isMoving = false
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 27)
+                .frame(width: 190, height: 50)
+                .foregroundStyle(.black.gradient)
+            RoundedRectangle(cornerRadius: 27)
+                .strokeBorder(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round, dash: [30, 200], dashPhase: isMoving ? 200 : -200))
+                .frame(width: 200, height: 60)
+                .foregroundStyle(
+                    LinearGradient(gradient: Gradient(colors: [.orange, .green, .blue, .white, .cyan]), startPoint: .trailing, endPoint: .leading)
+                    )
+            
+            Button("Kickstart Animation") {
+                // this is the button
+                // no changes needed
+            }
+            .foregroundColor(.white)
+        }
+        .onAppear {
+            // infinite loop animation without any delay or pause
+            withAnimation(Animation.linear(duration: 3).repeatForever(autoreverses: false)) {
+                isMoving.toggle()
+            }
+        }
     }
 }
